@@ -21,10 +21,10 @@ rm(list=ls(pattern="^tmp\\.*")) ## clean up
 
 ## create three difference data.frames for plots
 df.mtime.obs.upd <- data.frame(
-  probs = df.res.upd[df.res.upd$Group == "mtime", "Measured" ],
+  probs = as.numeric(df.res.upd[df.res.upd$Group == "mtime", "Measured" ]),
   value = num.fdc.flows)
 df.mtime.mod.upd <- data.frame(
-  probs = df.res.upd[df.res.upd$Group == "mtime", "Modelled" ],
+  probs = as.numeric(df.res.upd[df.res.upd$Group == "mtime", "Modelled" ]),
   value = num.fdc.flows)
 df.mtime.eq <- fdc.ss.st34453
 
@@ -44,7 +44,7 @@ df.mtime.all.upd <- melt(list(obs = df.mtime.obs.upd,
                           eq = df.mtime.eq),
                      id.vars = "x")
 
-df.mtime.all.upd$L1 <- factor(df.mtime.all$L1, levels = c("obs", "mod", "eq"))
+df.mtime.all.upd$L1 <- factor(df.mtime.all.upd$L1, levels = c("obs", "mod", "eq"))
 
 ## plot mtime and related data
 p.mtime00.upd <- ggplot(data = df.mtime.all.upd,
@@ -78,7 +78,7 @@ p.mtime00.upd <- p.mtime00.upd +
                                           as.character(df.mtime.all.upd$variable) == "ymax", "value"]
                 ))
 ## plot fdc
-png(file = paste0(chr.bacteria.twg.17.dir, "/fdc-upd.png"), 
+png(file = paste0(chr.bacteria.twg.17.dir, "/tables-charts-figures/fdc-upd.png"), 
     width = 480, height = 480, units = "px", pointsize = 12,
     bg = "white", res = NA, family = "", restoreConsole = TRUE)
 plot(p.mtime00.upd)

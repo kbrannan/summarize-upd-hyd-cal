@@ -21,10 +21,10 @@ rm(list=ls(pattern="^tmp\\.*")) ## clean up
 
 ## create three difference data.frames for plots
 df.mtime.obs.org <- data.frame(
-  probs = df.res.org[df.res.org$Group == "mtime", "Measured" ],
+  probs = as.numeric(df.res.org[df.res.org$Group == "mtime", "Measured" ]),
   value = num.fdc.flows)
 df.mtime.mod.org <- data.frame(
-  probs = df.res.org[df.res.org$Group == "mtime", "Modelled" ],
+  probs = as.numeric(df.res.org[df.res.org$Group == "mtime", "Modelled" ]),
   value = num.fdc.flows)
 df.mtime.eq <- fdc.ss.st34453
 
@@ -78,7 +78,7 @@ p.mtime00.org <- p.mtime00.org +
                                           as.character(df.mtime.all.org$variable) == "ymax", "value"]
                 ))
 ## plot fdc
-png(file = paste0(chr.bacteria.twg.17.dir, "/fdc-org.png"), 
+png(file = paste0(chr.bacteria.twg.17.dir, "/tables-charts-figures/fdc-org.png"), 
     width = 480, height = 480, units = "px", pointsize = 12,
     bg = "white", res = NA, family = "", restoreConsole = TRUE)
 plot(p.mtime00.org)

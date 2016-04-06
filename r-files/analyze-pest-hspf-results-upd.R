@@ -19,26 +19,26 @@ source("M:/Models/Bacteria/HSPF/bigelkHydroCal201601/r-files/functions.R")
 
 ## orginal WDM period
 ## read residuals file
-chr.res <- scan(file = paste0(chr.dir,"/pest-hspf-files/upd-uncert/calib.res"),
+chr.res.upd <- scan(file = paste0(chr.dir,"/pest-hspf-files/upd-uncert/calib.res"),
                 what = "character", sep = "\n", quiet = TRUE)
 ## replace * with x in field names
-chr.res[1] <- gsub("\\*","x",chr.res[1])
+chr.res.upd[1] <- gsub("\\*","x",chr.res.upd[1])
 
 ## replace spaces among columns with comma
-chr.res <- gsub("( ){1,}",",",chr.res)
+chr.res.upd <- gsub("( ){1,}",",",chr.res.upd)
 
 ## convert chracter vector to data.frame
-df.res <- data.frame(do.call(rbind,strsplit(chr.res,split = ",")), 
+df.res.upd <- data.frame(do.call(rbind,strsplit(chr.res.upd,split = ",")), 
                      stringsAsFactors = FALSE)
 
 ## remove first column becuase it is empty
-df.res <- df.res[ ,-1]
+df.res.upd <- df.res.upd[ ,-1]
 
 ## first row is names for columns
-names(df.res) <- df.res[1, ]
+names(df.res.upd) <- df.res.upd[1, ]
 
 ## discard first row
-df.res <- df.res[-1, ]
+df.res.upd <- df.res.upd[-1, ]
 
 ## get simulation dates from UCI
 chr.sim.dates <- gsub("([aA-zZ ])|(00\\:00)|(24\\:00)","",
@@ -52,7 +52,7 @@ dte.flows <- seq(from = as.Date(dte.str), to = as.Date(dte.end), by = "day")
 
 ## get mlog time-series
 df.mlog <- data.frame(dates = dte.flows, 
-                      df.res[grep("mlog", as.character(df.res$Group)), ])
+                      df.res.upd[grep("mlog", as.character(df.res.upd$Group)), ])
 df.mlog[, 4:12] <- sapply(df.mlog[ , 4:12], as.numeric)
 ## add year as factor
 df.mlog <- cbind(df.mlog, year = factor(format(df.mlog$dates, "%Y")))
@@ -104,28 +104,28 @@ df.mlog <- cbind(df.mlog,
 
 ## set data.frames for updated results
 df.mlog.upd <- df.mlog
-df.res.upd <- df.res
-for(ii in 3:11) df.res.upd[, ii] <- as.numeric(df.res.upd[, ii])
+df.res.upd.upd <- df.res.upd
+for(ii in 3:11) df.res.upd.upd[, ii] <- as.numeric(df.res.upd.upd[, ii])
 
 ## clean up
-rm(df.res, df.mlog, chr.sim.dates, chr.res, dte.flows, dte.end, dte.str)
+rm(df.res.upd, df.mlog, chr.sim.dates, chr.res.upd, dte.flows, dte.end, dte.str)
 
 ## flow stats table
-unique(df.res.upd$Group)
+unique(df.res.upd.upd$Group)
 df.flow.stats.upd <- data.frame(
   name = c("Q_total", "Q_smr", "Q_wtr", "Q_stm", "q_stm", "bf_ind"),
-  obs = c( sum(df.res.upd[df.res.upd$Group == "mvol_ann", "Measured"]),
-           sum(df.res.upd[df.res.upd$Group == "mvol_smr", "Measured"]),
-           sum(df.res.upd[df.res.upd$Group == "mvol_wtr", "Measured"]),
-           sum(df.res.upd[df.res.upd$Group == "mvol_stm", "Measured"]),
-          mean(df.res.upd[df.res.upd$Group == "mpeak",    "Measured"]),
-          df.res.upd[df.res.upd$Group == "mbaseind",      "Measured"]),
-  mod = c( sum(df.res.upd[df.res.upd$Group == "mvol_ann", "Modelled"]),
-           sum(df.res.upd[df.res.upd$Group == "mvol_smr", "Modelled"]),
-           sum(df.res.upd[df.res.upd$Group == "mvol_wtr", "Modelled"]),
-           sum(df.res.upd[df.res.upd$Group == "mvol_stm", "Modelled"]),
-           mean(df.res.upd[df.res.upd$Group == "mpeak",   "Modelled"]),
-           df.res.upd[df.res.upd$Group == "mbaseind",     "Modelled"]))
+  obs = c( sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_ann", "Measured"]),
+           sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_smr", "Measured"]),
+           sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_wtr", "Measured"]),
+           sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_stm", "Measured"]),
+          mean(df.res.upd.upd[df.res.upd.upd$Group == "mpeak",    "Measured"]),
+          df.res.upd.upd[df.res.upd.upd$Group == "mbaseind",      "Measured"]),
+  mod = c( sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_ann", "Modelled"]),
+           sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_smr", "Modelled"]),
+           sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_wtr", "Modelled"]),
+           sum(df.res.upd.upd[df.res.upd.upd$Group == "mvol_stm", "Modelled"]),
+           mean(df.res.upd.upd[df.res.upd.upd$Group == "mpeak",   "Modelled"]),
+           df.res.upd.upd[df.res.upd.upd$Group == "mbaseind",     "Modelled"]))
 cf <- (1 / 43560) ## convert cubic-ft to ac-ft
 
 df.flow.stats.upd[ 1:4, 2:3] <- df.flow.stats.upd[ 1:4, 2:3] * cf
@@ -209,7 +209,7 @@ names(df.sum.by.year.mlog.res.fz) <-
 
 ## get mflow time-series
 df.mflow <- data.frame(dates = dte.flows, 
-                      df.res[grep("mflow", as.character(df.res$Group)), ])
+                      df.res.upd[grep("mflow", as.character(df.res.upd$Group)), ])
 df.mflow[, 4:12] <- sapply(df.mflow[ , 4:12], as.numeric)
 ## add year as factor
 df.mflow <- cbind(df.mflow, year = factor(format(df.mflow$dates, "%Y")))
@@ -308,7 +308,7 @@ df.mtime <- data.frame(
                         what = "character", 
                         quiet = TRUE), 
                       value = TRUE)))), 
-  df.res[grep("mtime", as.character(df.res$Group)), ])
+  df.res.upd[grep("mtime", as.character(df.res.upd$Group)), ])
 df.mtime[ , 4:12] <- sapply(df.mtime[, 4:12], as.numeric)
 ## create a long format table for mtime with factor indicating if from obs or model
 df.mtime.lg <- data.frame(rbind(cbind(src = "obs", value = df.mtime[ , 5], df.mtime[ ,c(1,6:12)]),
@@ -392,7 +392,7 @@ df.sum.mtime <- cast(df.mtime.all.y, x~L1, value = "value")
 ## get mvol_ann
 chr.yrs <- unique(format(dte.flows, "%Y"))
 df.mvol_ann <- data.frame(year = factor(chr.yrs), 
-                       df.res[grep("mvol_ann", as.character(df.res$Group)), ])
+                       df.res.upd[grep("mvol_ann", as.character(df.res.upd$Group)), ])
 df.mvol_ann[, 4:12] <- sapply(df.mvol_ann[ , 4:12], as.numeric)
 
 ## boxplot of weight x residuals
@@ -428,7 +428,7 @@ df.mvol_smr <- data.frame(
     unique(
       format(df.mlog$dates[
         grep("summer", as.character(df.mlog$season))], "%Y"))), 
-  df.res[grep("mvol_smr", as.character(df.res$Group)), ])
+  df.res.upd[grep("mvol_smr", as.character(df.res.upd$Group)), ])
 df.mvol_smr[, 4:12] <- sapply(df.mvol_smr[ , 4:12], as.numeric)
 
 ## boxplot of weight x residuals
@@ -464,7 +464,7 @@ df.mvol_wtr <- data.frame(
     unique(
       format(df.mlog$dates[
         grep("winter", as.character(df.mlog$season))], "%Y"))), 
-  df.res[grep("mvol_wtr", as.character(df.res$Group)), ])
+  df.res.upd[grep("mvol_wtr", as.character(df.res.upd$Group)), ])
 df.mvol_wtr[, 4:12] <- sapply(df.mvol_wtr[ , 4:12], as.numeric)
 
 ## boxplot of weight x residuals
@@ -515,7 +515,7 @@ df.strm.dates <- data.frame(apply(df.strm.dates.raw, MARGIN = 2, strptime,
 names(df.strm.dates) <- c("begin", "end")
 
 ## peaks
-df.storms.peak <- df.res[ df.res$Group == "mpeak", ]
+df.storms.peak <- df.res.upd[ df.res.upd$Group == "mpeak", ]
 df.storms.peak[ ,3:11] <- sapply(df.storms.peak[ ,3:11],as.numeric)
 
 ## combine dates with storms
@@ -560,7 +560,7 @@ df.storms.peak <- cbind(df.storms.peak,
                         
                         )
 ## volumes
-df.storms.vol <- df.res[ df.res$Group == "mvol_stm", ]
+df.storms.vol <- df.res.upd[ df.res.upd$Group == "mvol_stm", ]
 df.storms.vol[ ,3:11] <- sapply(df.storms.vol[ ,3:11],as.numeric)
 ## combine dates with storms
 df.storms.vol <- cbind(df.strm.dates, df.storms.vol)
