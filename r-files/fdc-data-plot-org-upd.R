@@ -18,10 +18,10 @@ p.mtime00.both <- ggplot(data = df.mtime.both,
                     title = "flow duration curves") + 
   scale_y_log10() + 
   scale_colour_manual(name = "", breaks = c("org", "upd", "eq"), 
-                      labels = c("Org", "Upd", "USGS Eq"), 
+                      labels = c("Original", "Updated", "USGS Eq"), 
                       values = c("blue", "green", "black")) +
   scale_shape_manual(name = "", breaks = c("org", "upd", "eq"), 
-                     labels = c("Org", "Upd", "USGS Eq"),
+                     labels = c("Original", "Updated", "USGS Eq"),
                      values = c(21, 17, 15)) +
   xlab("Percent Time Greater") + ylab("Mean Daily Flow (cfs)")
 
@@ -39,13 +39,13 @@ p.mtime00.both <- p.mtime00.both +
   geom_errorbar(data = df.mtime.both[df.mtime.both$L1 == "eq", ], 
                 aes(x = df.mtime.both[df.mtime.both$L1 == "eq" & 
                                        as.character(df.mtime.both$variable) == "ymin", 'x'],
-                    ymin = df.mtime.all.org[df.mtime.both$L1 == "eq" & 
+                    ymin = df.mtime.both[df.mtime.both$L1 == "eq" & 
                                           as.character(df.mtime.both$variable) == "ymin", 'value'],
-                    ymax = df.mtime.all.org[df.mtime.both$L1 == "eq" & 
+                    ymax = df.mtime.both[df.mtime.both$L1 == "eq" & 
                                           as.character(df.mtime.both$variable) == "ymax", "value"]
                 ))
 ## plot fdc
-png(file = paste0(chr.bacteria.twg.17.dir, "/fdc-org-upd.png"), 
+png(file = paste0(chr.bacteria.twg.17.dir, "/tables-charts-figures/fdc-org-upd.png"), 
     width = 480, height = 480, units = "px", pointsize = 12,
     bg = "white", res = NA, family = "", restoreConsole = TRUE)
 plot(p.mtime00.both)
