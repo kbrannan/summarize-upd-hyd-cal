@@ -134,20 +134,11 @@ df.flow.stats.upd[ 1:4, 2:3] <- df.flow.stats.upd[ 1:4, 2:3] * cf
 df.flow.stats.upd <- cbind(df.flow.stats.upd,
                            per_diff = 100 * (df.flow.stats.upd$mod - df.flow.stats.upd$obs) / df.flow.stats.upd$obs)
 
-  
-          
-              
-  colSums(df.res.upd[df.res.upd$Group == "mvol_smr", c("Measured", "Modelled")])
-  colSums(df.res.upd[df.res.upd$Group == "mvol_wtr", c("Measured", "Modelled")])
-  colSums(df.res.upd[df.res.upd$Group == "mvol_stm", c("Measured", "Modelled")])
-  colMeans(df.res.upd[df.res.upd$Group == "mpeak", c("Measured", "Modelled")])
+## plots
 
 
-colSums(df.res.upd[df.res.upd$Group == "mvol_ann", c("Measured", "Modelled")])
-colSums(df.res.upd[df.res.upd$Group == "mvol_smr", c("Measured", "Modelled")])
-colSums(df.res.upd[df.res.upd$Group == "mvol_wtr", c("Measured", "Modelled")])
-colSums(df.res.upd[df.res.upd$Group == "mvol_stm", c("Measured", "Modelled")])
-colMeans(df.res.upd[df.res.upd$Group == "mpeak", c("Measured", "Modelled")])
+
+
 
 ## boxplot of weight x residuals
 p.mlog.bar.wt.rs.all <- 

@@ -19,26 +19,26 @@ source("M:/Models/Bacteria/HSPF/bigelkHydroCal201601/r-files/functions.R")
 
 ## orginal WDM period
 ## read residuals file
-chr.res <- scan(file = paste0(chr.dir,"/org-calib/Final_Deliverables_EPA_July2012/PEST_end/control.res"),
+chr.res.org <- scan(file = paste0(chr.dir,"/org-calib/Final_Deliverables_EPA_July2012/PEST_end/control.res"),
                 what = "character", sep = "\n", quiet = TRUE)
 ## replace * with x in field names
-chr.res[1] <- gsub("\\*","x",chr.res[1])
+chr.res.org[1] <- gsub("\\*","x",chr.res.org[1])
 
 ## replace spaces among columns with comma
-chr.res <- gsub("( ){1,}",",",chr.res)
+chr.res.org <- gsub("( ){1,}",",",chr.res.org)
 
 ## convert chracter vector to data.frame
-df.res <- data.frame(do.call(rbind,strsplit(chr.res,split = ",")), 
+df.res.org <- data.frame(do.call(rbind,strsplit(chr.res.org,split = ",")), 
                      stringsAsFactors = FALSE)
 
 ## remove first column becuase it is empty
-df.res <- df.res[ ,-1]
+df.res.org <- df.res.org[ ,-1]
 
 ## first row is names for columns
-names(df.res) <- df.res[1, ]
+names(df.res.org) <- df.res.org[1, ]
 
 ## discard first row
-df.res <- df.res[-1, ]
+df.res.org <- df.res.org[-1, ]
 
 ## get simulation dates from UCI
 chr.sim.dates <- gsub("([aA-zZ ])|(00\\:00)|(24\\:00)","",
@@ -52,7 +52,7 @@ dte.flows <- seq(from = as.Date(dte.str), to = as.Date(dte.end), by = "day")
 
 ## get mlog time-series
 df.mlog <- data.frame(dates = dte.flows, 
-                      df.res[grep("mlog", as.character(df.res$Group)), ])
+                      df.res.org[grep("mlog", as.character(df.res.org$Group)), ])
 df.mlog[, 4:12] <- sapply(df.mlog[ , 4:12], as.numeric)
 ## add year as factor
 df.mlog <- cbind(df.mlog, year = factor(format(df.mlog$dates, "%Y")))
@@ -110,7 +110,7 @@ p.mlog.bar.wt.rs.all <-
 ##plot(p.mlog.bar.wt.rs.all)
 
 ## summary table of weight x residuals
-df.sum.mlog.res <- data.frame(
+df.sum.mlog.res.org <- data.frame(
   mean = mean(df.mlog$WeightxResidual),
   sd = sd(df.mlog$WeightxResidual),
   median = median(df.mlog$WeightxResidual),
@@ -119,7 +119,7 @@ df.sum.mlog.res <- data.frame(
   n = length(df.mlog$WeightxResidual))
 
 # commands to write table to pdf
-#grid.table(df.sum.mlog.res, show.rownames = FALSE)
+#grid.table(df.sum.mlog.res.org, show.rownames = FALSE)
 #dev.off()
 
 ## boxplot of weight x residuals by year
@@ -131,10 +131,10 @@ p.mlog.bar.wt.rs.yr <-
 ##plot(p.mlog.bar.wt.rs.yr)
 
 ## summary table of weight x residuals
-df.sum.by.year.mlog.res <- 
+df.sum.by.year.mlog.res.org <- 
   summaryBy(WeightxResidual ~ year, data = df.mlog,
             FUN = c(mean, sd, median, min, max, length))
-names(df.sum.by.year.mlog.res) <- 
+names(df.sum.by.year.mlog.res.org) <- 
   c("year", "mean", "sd", "median", "min", "max", "n")
 
 ## boxplot of weight x residuals by season
@@ -146,10 +146,10 @@ p.mlog.bar.wt.rs.sn <-
 ##plot(p.mlog.bar.wt.rs.sn)
 
 ## summary table of weight x residuals by season
-df.sum.by.year.mlog.res.sn <- 
+df.sum.by.year.mlog.res.org.sn <- 
   summaryBy(WeightxResidual ~ season, data = df.mlog,
             FUN = c(mean, sd, median, min, max, length))
-names(df.sum.by.year.mlog.res.sn) <- 
+names(df.sum.by.year.mlog.res.org.sn) <- 
   c("season", "mean", "sd", "median", "min", "max", "n")
 
 
@@ -161,16 +161,16 @@ p.mlog.bar.wt.rs.fz <-
 ##plot(p.mlog.bar.wt.rs.fz)
 
 ## summary table of weight x residuals by ldc flow zone
-df.sum.by.year.mlog.res.fz <- 
+df.sum.by.year.mlog.res.org.fz <- 
   summaryBy(WeightxResidual ~ flw.zn, data = df.mlog,
             FUN = c(mean, sd, median, min, max, length))
-names(df.sum.by.year.mlog.res.fz) <- 
+names(df.sum.by.year.mlog.res.org.fz) <- 
   c("flw.zn", "mean", "sd", "median", "min", "max", "n")
 
 
 ## get mflow time-series
 df.mflow <- data.frame(dates = dte.flows, 
-                      df.res[grep("mflow", as.character(df.res$Group)), ])
+                      df.res.org[grep("mflow", as.character(df.res.org$Group)), ])
 df.mflow[, 4:12] <- sapply(df.mflow[ , 4:12], as.numeric)
 ## add year as factor
 df.mflow <- cbind(df.mflow, year = factor(format(df.mflow$dates, "%Y")))
@@ -204,7 +204,7 @@ p.mflow.bar.wt.rs.all <-
 ##plot(p.mflow.bar.wt.rs.all)
 
 ## summary table of weight x residuals
-df.sum.mflow.res <- data.frame(
+df.sum.mflow.res.org <- data.frame(
   mean = mean(df.mflow$WeightxResidual),
   sd = sd(df.mflow$WeightxResidual),
   median = median(df.mflow$WeightxResidual),
@@ -221,10 +221,10 @@ p.mflow.bar.wt.rs.yr <-
 ##plot(p.mflow.bar.wt.rs.yr)
 
 ## summary table of weight x residuals by year
-df.sum.by.year.mflow.res.yr <- 
+df.sum.by.year.mflow.res.org.yr <- 
   summaryBy(WeightxResidual ~ year, data = df.mflow,
             FUN = c(mean, sd, median, min, max, length))
-names(df.sum.by.year.mflow.res.yr) <- 
+names(df.sum.by.year.mflow.res.org.yr) <- 
   c("year", "mean", "sd", "median", "min", "max", "n")
 
 ## boxplot of weight x residuals by season
@@ -236,10 +236,10 @@ p.mflow.bar.wt.rs.sn <-
 ##plot(p.mflow.bar.wt.rs.sn)
 
 ## summary table of weight x residuals by season
-df.sum.by.year.mflow.res.sn <- 
+df.sum.by.year.mflow.res.org.sn <- 
   summaryBy(WeightxResidual ~ season, data = df.mflow,
             FUN = c(mean, sd, median, min, max, length))
-names(df.sum.by.year.mflow.res.sn) <- 
+names(df.sum.by.year.mflow.res.org.sn) <- 
   c("year", "mean", "sd", "median", "min", "max", "n")
 
 ## boxplot of weight x residuals by ldc flow zone
@@ -251,10 +251,10 @@ p.mflow.bar.wt.rs.fz <-
 ##plot(p.mflow.bar.wt.rs.fz)
 
 ## summary table of weight x residuals by ldc flow zone
-df.sum.by.year.mflow.res.fz <- 
+df.sum.by.year.mflow.res.org.fz <- 
   summaryBy(WeightxResidual ~ flw.zn, data = df.mflow,
             FUN = c(mean, sd, median, min, max, length))
-names(df.sum.by.year.mflow.res.fz) <- 
+names(df.sum.by.year.mflow.res.org.fz) <- 
   c("year", "mean", "sd", "median", "min", "max", "n")
 
 ## get mtime
@@ -269,7 +269,7 @@ df.mtime <- data.frame(
                         what = "character", 
                         quiet = TRUE), 
                       value = TRUE)))), 
-  df.res[grep("mtime", as.character(df.res$Group)), ])
+  df.res.org[grep("mtime", as.character(df.res.org$Group)), ])
 df.mtime[ , 4:12] <- sapply(df.mtime[, 4:12], as.numeric)
 ## create a long format table for mtime with factor indicating if from obs or model
 df.mtime.lg <- data.frame(rbind(cbind(src = "obs", value = df.mtime[ , 5], df.mtime[ ,c(1,6:12)]),
@@ -353,7 +353,7 @@ df.sum.mtime <- cast(df.mtime.all.y, x~L1, value = "value")
 ## get mvol_ann
 chr.yrs <- unique(format(dte.flows, "%Y"))
 df.mvol_ann <- data.frame(year = factor(chr.yrs), 
-                       df.res[grep("mvol_ann", as.character(df.res$Group)), ])
+                       df.res.org[grep("mvol_ann", as.character(df.res.org$Group)), ])
 df.mvol_ann[, 4:12] <- sapply(df.mvol_ann[ , 4:12], as.numeric)
 
 ## boxplot of weight x residuals
@@ -389,7 +389,7 @@ df.mvol_smr <- data.frame(
     unique(
       format(df.mlog$dates[
         grep("summer", as.character(df.mlog$season))], "%Y"))), 
-  df.res[grep("mvol_smr", as.character(df.res$Group)), ])
+  df.res.org[grep("mvol_smr", as.character(df.res.org$Group)), ])
 df.mvol_smr[, 4:12] <- sapply(df.mvol_smr[ , 4:12], as.numeric)
 
 ## boxplot of weight x residuals
@@ -425,7 +425,7 @@ df.mvol_wtr <- data.frame(
     unique(
       format(df.mlog$dates[
         grep("winter", as.character(df.mlog$season))], "%Y"))), 
-  df.res[grep("mvol_wtr", as.character(df.res$Group)), ])
+  df.res.org[grep("mvol_wtr", as.character(df.res.org$Group)), ])
 df.mvol_wtr[, 4:12] <- sapply(df.mvol_wtr[ , 4:12], as.numeric)
 
 ## boxplot of weight x residuals
@@ -476,7 +476,7 @@ df.strm.dates <- data.frame(apply(df.strm.dates.raw, MARGIN = 2, strptime,
 names(df.strm.dates) <- c("begin", "end")
 
 ## peaks
-df.storms.peak <- df.res[ df.res$Group == "mpeak", ]
+df.storms.peak <- df.res.org[ df.res.org$Group == "mpeak", ]
 df.storms.peak[ ,3:11] <- sapply(df.storms.peak[ ,3:11],as.numeric)
 
 ## combine dates with storms
@@ -521,7 +521,7 @@ df.storms.peak <- cbind(df.storms.peak,
                         
                         )
 ## volumes
-df.storms.vol <- df.res[ df.res$Group == "mvol_stm", ]
+df.storms.vol <- df.res.org[ df.res.org$Group == "mvol_stm", ]
 df.storms.vol[ ,3:11] <- sapply(df.storms.vol[ ,3:11],as.numeric)
 ## combine dates with storms
 df.storms.vol <- cbind(df.strm.dates, df.storms.vol)
@@ -578,7 +578,7 @@ pdf(file = paste0(chr.dir, "/pest-hspf-hydcal-results-",
 ##
 ## mlog
 ## mlog weighted residuals for entire period
-tmp.table <- tableGrob(df.sum.mlog.res, show.rownames = FALSE)
+tmp.table <- tableGrob(df.sum.mlog.res.org, show.rownames = FALSE)
 tmp.h <- grobHeight(tmp.table)
 tmp.w <- grobWidth(tmp.table)
 tmp.title <- textGrob(label = "mlog weighted residuals for entire period",
