@@ -63,11 +63,16 @@ for(ii in 1:length(chr.res.files)) {
   
   ## estimate fdc for current flow
   tmp.quant <- quantile(as.numeric(tmp.mflow$Modelled), num.x, names = FALSE)
+  
+  ## current fdc
+  tmp.fdc <- data.frame(x = num.x, y = tmp.quant, par = "est", 
+             run = tmp.name, stringsAsFactors = FALSE)
 
   ## add to df.fdcs
-  df.fdcs <- rbind(df.fdcs, 
-                   data.frame(x = num.x, y = tmp.quant, par = "est", 
-                        run = tmp.name, stringsAsFactors = FALSE))
+  # df.fdcs <- rbind(df.fdcs, 
+  #                  data.frame(x = num.x, y = tmp.quant, par = "est", 
+  #                       run = tmp.name, stringsAsFactors = FALSE))
+  df.fdcs <- rbind(df.fdcs, tmp.fdc) 
 
   ## clean up
   rm(list=ls(pattern="^tmp\\."))
@@ -107,18 +112,22 @@ rm(tmp.df.res) ## clean up
 ## estimate fdc for current flow
 tmp.quant <- quantile(as.numeric(tmp.mflow$Measured), num.x, names = FALSE)
 
+## current fdc
+tmp.fdc <- data.frame(x = num.x, y = tmp.quant, par = "est", 
+                      run = tmp.name, stringsAsFactors = FALSE)
+
 ## add to df.fdcs
-df.fdcs <- rbind(df.fdcs, 
-                 data.frame(x = num.x, y = tmp.quant, par = "est", 
-                            run = tmp.name, stringsAsFactors = FALSE))
+df.fdcs <- rbind(df.fdcs, tmp.fdc)
 
-## create factors
-df.fdcs$run <- factor(df.fdcs$run, 
-                      levels = c("obs", "cal" , 
-                                 unique((df.fdcs$run[grep("^uncert",df.fdcs$run)])))) 
 
+## add source factor
+tmp.src <- df.fdcs$run
+tmp.src[grep("^uncert",tmp.src)] <- "uncert"
+df.fdcs <- cbind(df.fdcs, src = tmp.src, stringsAsFactors = FALSE)
+df.fdcs$src <- factor(df.fdcs$src, levels = c("eq", "obs", "calib", "uncert"))
+
+## add par factor
 df.fdcs$par <- factor(df.fdcs$par, levels = c("est", "lower", "upper"))
-
 
 ## clean up
 rm(list=ls(pattern="^tmp\\."))
