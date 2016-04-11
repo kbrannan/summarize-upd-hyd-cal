@@ -17,7 +17,7 @@ source("M:/Models/Bacteria/HSPF/HydroCal201506/R_projs/Select_Storm_HydCal/devel
 source("M:/Models/Bacteria/HSPF/bigelkHydroCal201601/r-files/functions.R")
 
 
-## orginal WDM period
+## updated WDM period
 ## read residuals file
 chr.res.upd <- scan(file = paste0(chr.dir,"/pest-hspf-files/upd-uncert/calib.res"),
                 what = "character", sep = "\n", quiet = TRUE)
